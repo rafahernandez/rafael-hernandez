@@ -39,4 +39,15 @@ app.get('/api/timestamp/:input_date?', (request, response) => {
     }
     response.json({"unix":d.getTime(),"utc" : d.toUTCString()});
 });
+app.get('/api/whoami', (request, response) => {
+    const ip = request.headers['fastly-client-ip']  || request.headers['x-forwarded-for']
+        || request.connection.remoteAddress || "Not found";
+    const language = request.headers["accept-language"];
+    const agent = request.get('User-Agent');
+    response.json({
+        "ipaddress": ip,
+        "language" : language,
+        "software" : agent
+    });
+});
 exports.app = functions.https.onRequest(app);
